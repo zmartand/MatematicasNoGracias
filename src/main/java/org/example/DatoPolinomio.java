@@ -1,3 +1,5 @@
+package org.example;
+
 public abstract class DatoPolinomio {
     private int valor;
     private int termino;

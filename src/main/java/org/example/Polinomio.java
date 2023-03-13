@@ -1,3 +1,5 @@
+package org.example;
+
 public class Polinomio extends DatoPolinomio implements Nodo {
     private Nodo termino_mayor;
     private int grado;
