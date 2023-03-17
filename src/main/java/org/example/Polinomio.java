@@ -108,7 +108,7 @@ public class Polinomio extends DatoPolinomio implements Nodo {
     }
 
     //Mostrar el polinomio
-    public void mostrarPolinomio() {
+    /*public void mostrarPolinomio() {
         Nodo aux = this.termino_mayor;
         while (aux != null) {
             System.out.print(aux.getInfo().getValor() + "x^" + aux.getInfo().getTermino());
@@ -118,7 +118,7 @@ public class Polinomio extends DatoPolinomio implements Nodo {
             aux = aux.getSig();
         }
         System.out.println();
-    }
+    }*/
 
     //Sumar dos polinomios
     public Polinomio sumar(Polinomio p) {
@@ -149,5 +149,18 @@ public class Polinomio extends DatoPolinomio implements Nodo {
             aux = aux.getSig();
         }
         return resultado;
+    }
+    //Método mostramos el polinomio:
+    public Polinomio mostrarPolinomio() {
+        Nodo aux = this.termino_mayor;
+        while (aux != null) {
+            System.out.print(aux.getInfo().getValor() + "x^" + aux.getInfo().getTermino());
+            if (aux.getSig() != null) {
+                System.out.print(" + ");
+            }
+            aux = aux.getSig();
+        }
+        System.out.println();
+        return null;
     }
 }

@@ -52,7 +52,7 @@ public class Main {
                     p2.modificarTermino(termino4, valor4);
                     break;
                 case 5:
-                    Polinomio suma = p1.sumar(p2);
+                    Polinomio suma = p1.sumar(p1, p2);
                     System.out.println("La suma de los polinomios es: ");
                     suma.mostrarPolinomio();
                     break;
