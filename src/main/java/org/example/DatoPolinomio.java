@@ -1,28 +1,32 @@
 package org.example;
 
-public abstract class DatoPolinomio {
-    private int valor;
+public class DatoPolinomio {
+    private float valor;
     private int termino;
-    public DatoPolinomio(int valor, int termino) {
+
+    public DatoPolinomio(float valor, int termino) {
         this.valor = valor;
         this.termino = termino;
     }
 
-    public DatoPolinomio() {
+    public float obtenerValor() {
+        return this.valor;
     }
-    //Crea un dato polinomio con valor y termino.
-    public int getValor() {
-        return valor;
+
+    public int obtenerTermino() {
+        return this.termino;
     }
-    public int getTermino() {
-        return termino;
-    }
-    public void setValor(int valor) {
+
+    public void establecerValor(float valor) {
         this.valor = valor;
     }
-    public void setTermino(int termino) {
+
+    public void establecerTermino(int termino) {
         this.termino = termino;
     }
 
-
+    public String toString() {
+        return this.valor + "*x^" + this.termino;
+    }
 }
+
