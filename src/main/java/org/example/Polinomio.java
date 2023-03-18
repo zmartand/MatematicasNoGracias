@@ -106,17 +106,18 @@ public class Polinomio {
         Polinomio resultado = new Polinomio();
         Nodo nodoActual = this.terminoMayor;
         while (nodoActual != null) {
-            Nodo nodoActualOtroPolinomio = polinomio.obtenerTerminoMayor();
+            Nodo nodoActualOtroPolinomio = polinomio.terminoMayor;
             while (nodoActualOtroPolinomio != null) {
                 float valor = nodoActual.obtenerDato().obtenerValor() * nodoActualOtroPolinomio.obtenerDato().obtenerValor();
                 int termino = nodoActual.obtenerDato().obtenerTermino() + nodoActualOtroPolinomio.obtenerDato().obtenerTermino();
                 resultado.cargarTermino(valor, termino);
-                nodoActual = nodoActualOtroPolinomio.obtenerSiguiente();
+                nodoActualOtroPolinomio = nodoActualOtroPolinomio.obtenerSiguiente();
             }
             nodoActual = nodoActual.obtenerSiguiente();
         }
         return resultado;
     }
+
     public Polinomio restar(Polinomio polinomio) {
         Polinomio resultado = new Polinomio();
         Nodo nodoActual = this.terminoMayor;
@@ -142,38 +143,47 @@ public class Polinomio {
         }
         return resultado;
     }
-
-
-    public void eliminarTermino(float valor, int termino) {
+    public void eliminarTermino(int termino) {
         if (this.terminoMayor == null) {
-            return;
+            return; // El polinomio está vacío, no hay términos que eliminar
         }
+
         Nodo nodoActual = this.terminoMayor;
         Nodo nodoAnterior = null;
+
         while (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() != termino) {
             nodoAnterior = nodoActual;
             nodoActual = nodoActual.obtenerSiguiente();
         }
+
         if (nodoActual == null) {
-            return;
+            return; // El término a eliminar no se encontró en el polinomio
         }
+
         if (nodoAnterior == null) {
-            this.terminoMayor = nodoActual.obtenerSiguiente();
+            this.terminoMayor = nodoActual.obtenerSiguiente(); // El término a eliminar es el primero del polinomio
         } else {
-            nodoAnterior.establecerSiguiente(nodoActual.obtenerSiguiente());
+            nodoAnterior.establecerSiguiente(nodoActual.obtenerSiguiente()); // El término a eliminar está en medio o al final del polinomio
         }
-        if (nodoActual.obtenerDato().obtenerTermino() == this.grado) {
-            Nodo nodoActual2 = this.terminoMayor;
-            int maxTermino = 0;
-            while (nodoActual2 != null) {
-                if (nodoActual2.obtenerDato().obtenerTermino() > maxTermino) {
-                    maxTermino = nodoActual2.obtenerDato().obtenerTermino();
-                }
-                nodoActual2 = nodoActual2.obtenerSiguiente();
+
+        // Actualizar el grado del polinomio si el término a eliminar era el término de mayor grado
+        if (nodoActual == this.terminoMayor) {
+            Nodo nuevoTerminoMayor = this.terminoMayor.obtenerSiguiente();
+            while (nuevoTerminoMayor != null && nuevoTerminoMayor.obtenerDato().obtenerValor() == 0) {
+                nuevoTerminoMayor = nuevoTerminoMayor.obtenerSiguiente();
             }
-            this.grado = maxTermino;
+            this.terminoMayor = nuevoTerminoMayor;
+            if (nuevoTerminoMayor == null) {
+                this.grado = 0;
+            } else {
+                this.grado = nuevoTerminoMayor.obtenerDato().obtenerTermino();
+            }
+        } else if (nodoActual.obtenerDato().obtenerTermino() == this.grado) {
+            // Actualizar el grado del polinomio si el término a eliminar era el término de mayor grado
+            this.grado = this.terminoMayor.obtenerDato().obtenerTermino();
         }
     }
+
 
     public boolean existeTermino(int termino) {
         Nodo nodoActual = this.terminoMayor;
@@ -197,8 +207,19 @@ public class Polinomio {
         }
         System.out.println();
     }
-
-
+    @Override
+    public String toString() {
+        Nodo nodoActual = this.terminoMayor;
+        StringBuilder sb = new StringBuilder();
+        while (nodoActual != null) {
+            sb.append(nodoActual.obtenerDato().toString());
+            nodoActual = nodoActual.obtenerSiguiente();
+            if (nodoActual != null) {
+                sb.append(" + ");
+            }
+        }
+        return sb.toString();
+    }
 }
 
 
