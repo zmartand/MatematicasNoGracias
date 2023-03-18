@@ -1,166 +1,206 @@
 package org.example;
 
-public class Polinomio extends DatoPolinomio implements Nodo {
-    private Nodo termino_mayor;
+public class Polinomio {
     private int grado;
+    private Nodo terminoMayor;
 
     public Polinomio() {
-        super();
-        this.termino_mayor = null;
-        this.grado = -1;
+        this.grado = 0;
+        this.terminoMayor = null;
     }
 
-    @Override
-    public DatoPolinomio getInfo() {
-        return null;
+    public int obtenerGrado() {
+        return this.grado;
     }
 
-    @Override
-    public void setInfo(DatoPolinomio info) {
-
+    public Nodo obtenerTerminoMayor() {
+        return this.terminoMayor;
     }
 
-    @Override
-    public Nodo getSig() {
-        return null;
+    public void establecerGrado(int grado) {
+        this.grado = grado;
     }
 
-    @Override
-    public void setSig(Nodo sig) {
-
+    public void establecerTerminoMayor(Nodo terminoMayor) {
+        this.terminoMayor = terminoMayor;
     }
 
-    //Crea un polinomio de grado cero
-    public void agregarTermino(int termino, int valor) {
-        Nodo aux = new Nodo() {
-            @Override
-            public DatoPolinomio getInfo() {
-                return null;
-            }
-
-            @Override
-            public void setInfo(DatoPolinomio info) {
-            }
-
-            @Override
-            public Nodo getSig() {
-                return null;
-            }
-
-            @Override
-            public void setSig(Nodo sig) {
-            }
-        };
-        DatoPolinomio dato = new DatoPolinomio(valor, termino) {
-            @Override
-            public int getValor() {
-                return 0;
-            }
-
-            @Override
-            public void setValor(int valor) {
-            }
-
-            @Override
-            public int getTermino() {
-                return 0;
-            }
-        };
-        if (this.termino_mayor == null) {
-            this.termino_mayor = aux;
-            aux.setInfo(dato);
-            aux.setSig(null);
+    public void cargarTermino(float valor, int termino) {
+        DatoPolinomio dato = new DatoPolinomio(valor, termino);
+        Nodo nuevoNodo = new Nodo(dato);
+        if (this.terminoMayor == null) {
+            this.terminoMayor = nuevoNodo;
         } else {
-            Nodo aux2 = this.termino_mayor;
-            while (aux2.getSig() != null) {
-                aux2 = aux2.getSig();
+            Nodo nodoActual = this.terminoMayor;
+            Nodo nodoAnterior = null;
+            while (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() > termino) {
+                nodoAnterior = nodoActual;
+                nodoActual = nodoActual.obtenerSiguiente();
             }
-            aux2.setSig(aux);
-            aux.setInfo(dato);
-            aux.setSig(null);
+            if (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() == termino) {
+                nodoActual.obtenerDato().establecerValor(valor);
+            } else {
+                nuevoNodo.establecerSiguiente(nodoActual);
+                if (nodoAnterior == null) {
+                    this.terminoMayor = nuevoNodo;
+                } else {
+                    nodoAnterior.establecerSiguiente(nuevoNodo);
+                }
+            }
         }
         if (termino > this.grado) {
             this.grado = termino;
         }
     }
 
-    //Modificar término
-    public void modificarTermino(int termino, int valor) {
-        Nodo aux = this.termino_mayor;
-        while (aux != null) {
-            if (aux.getInfo().getTermino() == termino) {
-                aux.getInfo().setValor(valor);
-            }
-            aux = aux.getSig();
+    public void modificarTermino(float valor, int termino) {
+        Nodo nodoActual = this.terminoMayor;
+        while (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() > termino) {
+            nodoActual = nodoActual.obtenerSiguiente();
+        }
+        if (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() == termino) {
+            nodoActual.obtenerDato().establecerValor(valor);
         }
     }
 
-    //Obtener valor de un término del polinomio
-    public int obtenerValor(int termino) {
-        Nodo aux = this.termino_mayor;
-        while (aux != null) {
-            if (aux.getInfo().getTermino() == termino) {
-                return aux.getInfo().getValor();
-            }
-            aux = aux.getSig();
-        }
-        return 0;
-    }
-
-    //Mostrar el polinomio
-    /*public void mostrarPolinomio() {
-        Nodo aux = this.termino_mayor;
-        while (aux != null) {
-            System.out.print(aux.getInfo().getValor() + "x^" + aux.getInfo().getTermino());
-            if (aux.getSig() != null) {
-                System.out.print(" + ");
-            }
-            aux = aux.getSig();
-        }
-        System.out.println();
-    }*/
-
-    //Sumar dos polinomios
-    public Polinomio sumar(Polinomio p) {
-        Polinomio resultado = new Polinomio();
-        Nodo aux = this.termino_mayor;
-        while (aux != null) {
-            resultado.agregarTermino(aux.getInfo().getTermino(), aux.getInfo().getValor());
-            aux = aux.getSig();
-        }
-        aux = p.termino_mayor;
-        while (aux != null) {
-            resultado.modificarTermino(aux.getInfo().getTermino(), resultado.obtenerValor(aux.getInfo().getTermino()) + aux.getInfo().getValor());
-            aux = aux.getSig();
+    public float obtenerValor(float x) {
+        float resultado = 0;
+        Nodo nodoActual = this.terminoMayor;
+        while (nodoActual != null) {
+            resultado += nodoActual.obtenerDato().obtenerValor();
+            nodoActual = nodoActual.obtenerSiguiente();
         }
         return resultado;
     }
 
-    //Multiplicar dos polinomios
-    public Polinomio multiplicar(Polinomio p) {
+    public Polinomio sumar(Polinomio polinomio) {
         Polinomio resultado = new Polinomio();
-        Nodo aux = this.termino_mayor;
-        while (aux != null) {
-            Nodo aux2 = p.termino_mayor;
-            while (aux2 != null) {
-                resultado.modificarTermino(aux.getInfo().getTermino() + aux2.getInfo().getTermino(), resultado.obtenerValor(aux.getInfo().getTermino() + aux2.getInfo().getTermino()) + aux.getInfo().getValor() * aux2.getInfo().getValor());
-                aux2 = aux2.getSig();
+        Nodo nodoActual = this.terminoMayor;
+        Nodo nodoActualOtroPolinomio = polinomio.obtenerTerminoMayor();
+        while (nodoActual != null && nodoActualOtroPolinomio != null) {
+            if (nodoActual.obtenerDato().obtenerTermino() == nodoActualOtroPolinomio.obtenerDato().obtenerTermino()) {
+                float valor = nodoActual.obtenerDato().obtenerValor() + nodoActualOtroPolinomio.obtenerDato().obtenerValor();
+                resultado.cargarTermino(valor, nodoActual.obtenerDato().obtenerTermino());
+                nodoActual = nodoActual.obtenerSiguiente();
+                nodoActualOtroPolinomio = nodoActualOtroPolinomio.obtenerSiguiente();
+            } else if (nodoActual.obtenerDato().obtenerTermino() > nodoActualOtroPolinomio.obtenerDato().obtenerTermino()) {
+                resultado.cargarTermino(nodoActual.obtenerDato().obtenerValor(), nodoActual.obtenerDato().obtenerTermino());
+                nodoActual = nodoActual.obtenerSiguiente();
+            } else {
+                resultado.cargarTermino(nodoActualOtroPolinomio.obtenerDato().obtenerValor(), nodoActualOtroPolinomio.obtenerDato().obtenerTermino());
+                nodoActualOtroPolinomio = nodoActualOtroPolinomio.obtenerSiguiente();
             }
-            aux = aux.getSig();
+        }
+        while (nodoActual != null) {
+            resultado.cargarTermino(nodoActual.obtenerDato().obtenerValor(), nodoActual.obtenerDato().obtenerTermino());
+            nodoActual = nodoActual.obtenerSiguiente();
+        }
+        while (nodoActualOtroPolinomio != null) {
+            resultado.cargarTermino(nodoActualOtroPolinomio.obtenerDato().obtenerValor(), nodoActualOtroPolinomio.obtenerDato().obtenerTermino());
+            nodoActualOtroPolinomio = nodoActualOtroPolinomio.obtenerSiguiente();
         }
         return resultado;
     }
-    //Método mostramos el polinomio:
-    public Polinomio mostrarPolinomio() {
-        Nodo aux = this.termino_mayor;
-        while (aux != null) {
-            System.out.print(aux.getInfo().getValor() + "x^" + aux.getInfo().getTermino());
-            if (aux.getSig() != null) {
+
+    public Polinomio multiplicar(Polinomio polinomio) {
+        Polinomio resultado = new Polinomio();
+        Nodo nodoActual = this.terminoMayor;
+        while (nodoActual != null) {
+            Nodo nodoActualOtroPolinomio = polinomio.obtenerTerminoMayor();
+            while (nodoActualOtroPolinomio != null) {
+                float valor = nodoActual.obtenerDato().obtenerValor() * nodoActualOtroPolinomio.obtenerDato().obtenerValor();
+                int termino = nodoActual.obtenerDato().obtenerTermino() + nodoActualOtroPolinomio.obtenerDato().obtenerTermino();
+                resultado.cargarTermino(valor, termino);
+                nodoActual = nodoActualOtroPolinomio.obtenerSiguiente();
+            }
+            nodoActual = nodoActual.obtenerSiguiente();
+        }
+        return resultado;
+    }
+    public Polinomio restar(Polinomio polinomio) {
+        Polinomio resultado = new Polinomio();
+        Nodo nodoActual = this.terminoMayor;
+        Nodo nodoActualOtroPolinomio = polinomio.obtenerTerminoMayor();
+        while (nodoActual != null || nodoActualOtroPolinomio != null) {
+            float valor;
+            int termino;
+            if (nodoActual == null || (nodoActualOtroPolinomio != null && nodoActualOtroPolinomio.obtenerDato().obtenerTermino() > nodoActual.obtenerDato().obtenerTermino())) {
+                valor = -nodoActualOtroPolinomio.obtenerDato().obtenerValor();
+                termino = nodoActualOtroPolinomio.obtenerDato().obtenerTermino();
+                nodoActualOtroPolinomio = nodoActualOtroPolinomio.obtenerSiguiente();
+            } else if (nodoActualOtroPolinomio == null || (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() > nodoActualOtroPolinomio.obtenerDato().obtenerTermino())) {
+                valor = nodoActual.obtenerDato().obtenerValor();
+                termino = nodoActual.obtenerDato().obtenerTermino();
+                nodoActual = nodoActual.obtenerSiguiente();
+            } else {
+                valor = nodoActual.obtenerDato().obtenerValor() - nodoActualOtroPolinomio.obtenerDato().obtenerValor();
+                termino = nodoActual.obtenerDato().obtenerTermino();
+                nodoActual = nodoActual.obtenerSiguiente();
+                nodoActualOtroPolinomio = nodoActualOtroPolinomio.obtenerSiguiente();
+            }
+            resultado.cargarTermino(valor, termino);
+        }
+        return resultado;
+    }
+
+
+    public void eliminarTermino(float valor, int termino) {
+        if (this.terminoMayor == null) {
+            return;
+        }
+        Nodo nodoActual = this.terminoMayor;
+        Nodo nodoAnterior = null;
+        while (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() != termino) {
+            nodoAnterior = nodoActual;
+            nodoActual = nodoActual.obtenerSiguiente();
+        }
+        if (nodoActual == null) {
+            return;
+        }
+        if (nodoAnterior == null) {
+            this.terminoMayor = nodoActual.obtenerSiguiente();
+        } else {
+            nodoAnterior.establecerSiguiente(nodoActual.obtenerSiguiente());
+        }
+        if (nodoActual.obtenerDato().obtenerTermino() == this.grado) {
+            Nodo nodoActual2 = this.terminoMayor;
+            int maxTermino = 0;
+            while (nodoActual2 != null) {
+                if (nodoActual2.obtenerDato().obtenerTermino() > maxTermino) {
+                    maxTermino = nodoActual2.obtenerDato().obtenerTermino();
+                }
+                nodoActual2 = nodoActual2.obtenerSiguiente();
+            }
+            this.grado = maxTermino;
+        }
+    }
+
+    public boolean existeTermino(int termino) {
+        Nodo nodoActual = this.terminoMayor;
+        while (nodoActual != null) {
+            if (nodoActual.obtenerDato().obtenerTermino() == termino) {
+                return true;
+            }
+            nodoActual = nodoActual.obtenerSiguiente();
+        }
+        return false;
+    }
+
+    public void mostrar() {
+        Nodo nodoActual = this.terminoMayor;
+        while (nodoActual != null) {
+            System.out.print(nodoActual.obtenerDato().obtenerValor() + "x^" + nodoActual.obtenerDato().obtenerTermino());
+            if (nodoActual.obtenerSiguiente() != null) {
                 System.out.print(" + ");
             }
-            aux = aux.getSig();
+            nodoActual = nodoActual.obtenerSiguiente();
         }
         System.out.println();
-        return null;
     }
+
+
 }
+
+
+
+
