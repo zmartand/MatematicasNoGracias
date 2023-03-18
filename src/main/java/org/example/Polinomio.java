@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Scanner;
+
 public class Polinomio {
     private int grado;
     private Nodo terminoMayor;
@@ -52,17 +54,24 @@ public class Polinomio {
             this.grado = termino;
         }
     }
-
-    public void modificarTermino(float valor, int termino) {
+    public void modificarTermino(int termino, float valor) {
         Nodo nodoActual = this.terminoMayor;
-        while (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() > termino) {
+        boolean terminoEncontrado = false;
+        while (nodoActual != null && !terminoEncontrado) {
+            if (nodoActual.obtenerDato().obtenerTermino() == termino) {
+                if (valor != 0) {
+                    nodoActual.obtenerDato().establecerValor(valor);
+                } else {
+                    this.eliminarTermino(termino);
+                }
+                terminoEncontrado = true;
+            }
             nodoActual = nodoActual.obtenerSiguiente();
         }
-        if (nodoActual != null && nodoActual.obtenerDato().obtenerTermino() == termino) {
-            nodoActual.obtenerDato().establecerValor(valor);
+        if (!terminoEncontrado && valor != 0) {
+            this.cargarTermino(valor, termino);
         }
     }
-
     public float obtenerValor(float x) {
         float resultado = 0;
         Nodo nodoActual = this.terminoMayor;
@@ -72,7 +81,6 @@ public class Polinomio {
         }
         return resultado;
     }
-
     public Polinomio sumar(Polinomio polinomio) {
         Polinomio resultado = new Polinomio();
         Nodo nodoActual = this.terminoMayor;
